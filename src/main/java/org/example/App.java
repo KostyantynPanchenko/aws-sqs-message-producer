@@ -26,8 +26,6 @@ public class App {
     final var sqsClient = getSqsClient();
     sendMessage(sqsClient, queue, message);
     sqsClient.close();
-
-    System.out.println("Message '" + message + "' sent!");
   }
 
   private static SqsClient getSqsClient() {
@@ -44,14 +42,17 @@ public class App {
 
       final var queueUrlString = client.getQueueUrl(getQueueUrlRequest).queueUrl();
 
+      String uuid = UUID.randomUUID().toString();
+      String composedMessage = "UUID: " + uuid + ". Body: " + message;
       final var messageRequest = SendMessageRequest.builder()
           .queueUrl(queueUrlString)
-          .messageBody(message)
-          .messageDeduplicationId(UUID.randomUUID().toString())
+          .messageBody(composedMessage)
+          .messageDeduplicationId(uuid)
           .messageGroupId("aws-sqs-message-provider-group")
           .build();
 
       client.sendMessage(messageRequest);
+      System.out.println("Message '" + composedMessage + "' sent!");
     } catch (final SdkClientException exception) {
       System.err.println("Failed to send the message '" + message + "'");
       System.err.println(exception.getMessage());
