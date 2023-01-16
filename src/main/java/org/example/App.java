@@ -34,6 +34,7 @@ public class App {
     return SqsClient.builder()
         .region(Region.US_EAST_1)
         .credentialsProvider(ProfileCredentialsProvider.create("default"))
+//        .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
         .build();
   }
 
